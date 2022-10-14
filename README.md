@@ -1,6 +1,6 @@
 # Spring sunday Study Project
-> *일요일의 Spring 스터디*
-> * * *
+ *일요일의 Spring 스터디*
+ * * *
 > ![Spring Boot 2.6.12](https://img.shields.io/badge/Spring%20Boot-2.6.12-brightgreen.svg)
 ![JDK 11](https://img.shields.io/badge/JDK-11-brightgreen.svg)
 ![Gradle](https://img.shields.io/badge/Gradle-7.5.0-yellowgreen.svg)
@@ -17,4 +17,3 @@
 * * *
 > 0.0.1
 >> init spring boot
-~~~~
