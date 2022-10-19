@@ -11,4 +11,15 @@ spring:
       hibernate:
         format_sql: true
     show-sql: true
-
+logging:
+  level:
+    org:
+      springframework:
+        security:
+          web: trace
+    com:
+      study:
+        yongyeon:
+          sunday:
+            spring:
+              springsunday: debug
