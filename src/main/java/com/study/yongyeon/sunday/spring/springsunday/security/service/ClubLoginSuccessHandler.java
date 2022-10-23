@@ -1,5 +1,6 @@
-package com.study.yongyeon.sunday.spring.springsunday.dto;
+package com.study.yongyeon.sunday.spring.springsunday.security.service;
 
+import com.study.yongyeon.sunday.spring.springsunday.dto.ClubAuthMemberDTO;
 import com.study.yongyeon.sunday.spring.springsunday.entity.ClubMemberSocial;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;

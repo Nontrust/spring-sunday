@@ -51,7 +51,7 @@ public class ClubOauth2UserDetailsService extends DefaultOAuth2UserService {
                 ,ClubMemberSocial.GOOGLE
                 ,clubMember.getRoleSet().stream()
                 .map((role)->
-                    new SimpleGrantedAuthority("ROLE_"+role.name())
+                    new SimpleGrantedAuthority(role.name())
                 ).collect(Collectors.toList())
                 , oAuth2User.getAttributes()
         );

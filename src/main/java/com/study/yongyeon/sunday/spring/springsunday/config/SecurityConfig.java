@@ -1,20 +1,16 @@
 package com.study.yongyeon.sunday.spring.springsunday.config;
 
-import com.study.yongyeon.sunday.spring.springsunday.dto.ClubLoginSuccessHandler;
-import com.study.yongyeon.sunday.spring.springsunday.security.service.ClubUserDetailService;
+import com.study.yongyeon.sunday.spring.springsunday.security.service.ClubLoginFailureHandler;
+import com.study.yongyeon.sunday.spring.springsunday.security.service.ClubLoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 @Configuration
 @Slf4j
@@ -29,16 +25,21 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        http.csrf().disable()
+        http
                 .authorizeRequests(auth->
                     auth    .antMatchers("/permit/all").permitAll()
                             .antMatchers("/permit/member").hasRole("USER")
                             .antMatchers("/permit/admin").hasRole("ADMIN"))
-                .formLogin()
+
 //                .userDetailsService(clubUserDetailService)
-                .and().logout()
+                .formLogin()
+//                .successHandler(clubMemberSuccessHandler())
+//                .failureHandler(authenticationFailureHandler())
                 .and().oauth2Login()
-                .successHandler(clubMemberSuccessHandler());
+                .and().formLogin()
+                .and()
+                .csrf().disable()
+                .logout();
 //                .and()
 //                .rememberMe()
 //                .tokenValiditySeconds(60*60*24*7);
@@ -49,5 +50,10 @@ public class SecurityConfig {
     @Bean
     public ClubLoginSuccessHandler clubMemberSuccessHandler(){
         return new ClubLoginSuccessHandler(passwordEncoder());
+    }
+
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler(){
+        return new ClubLoginFailureHandler();
     }
 }

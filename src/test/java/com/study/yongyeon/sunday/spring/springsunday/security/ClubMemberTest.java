@@ -17,7 +17,7 @@ import java.util.stream.IntStream;
 public class ClubMemberTest {
     @Autowired
     private ClubMemberRepository clubMemberRepository;
-//    @Autowired
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Test

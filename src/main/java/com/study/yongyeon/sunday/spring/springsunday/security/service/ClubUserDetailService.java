@@ -10,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ClubUserDetailService implements UserDetailsService {
     private final ClubMemberRepository clubMemberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) {
@@ -28,7 +30,7 @@ public class ClubUserDetailService implements UserDetailsService {
 
         log.info("ClubUserDetailService::findMember ::: {}",findMember);
 
-        if(findMember.isPresent()) {
+        if(! findMember.isPresent()) {
             throw new UsernameNotFoundException("Check Email or Social");
         } else {
             log.info("isNotPresent");
@@ -42,7 +44,7 @@ public class ClubUserDetailService implements UserDetailsService {
                 clubMember.getPassword(),
                 clubMember.getFromSocial(),
                 clubMember.getRoleSet().stream()
-                        .map(role ->new SimpleGrantedAuthority("ROLE_"+role.name())).collect(Collectors.toSet())
+                        .map(role ->new SimpleGrantedAuthority(role.name())).collect(Collectors.toSet())
         );
         clubAuthMember.setName(clubMember.getName());
         clubAuthMember.setFromSocial(clubMember.getFromSocial());

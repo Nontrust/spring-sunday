@@ -15,6 +15,6 @@ public interface ClubMemberRepository extends JpaRepository<ClubMember, String> 
      * https://blog.leocat.kr/notes/2019/05/26/spring-data-using-entitygraph-to-customize-fetch-graph
      */
     @EntityGraph(attributePaths = {"roleSet"}, type = EntityGraph.EntityGraphType.LOAD)
-    @Query(value = "select cm from ClubMember  cm where cm.email =:email and cm.fromSocial =:social")
+    @Query(value = "select cm from ClubMember cm where cm.email =:email and cm.fromSocial =:social")
     Optional<ClubMember> findByEmail(@Param("email") String email, @Param("social") ClubMemberSocial social);
 }
