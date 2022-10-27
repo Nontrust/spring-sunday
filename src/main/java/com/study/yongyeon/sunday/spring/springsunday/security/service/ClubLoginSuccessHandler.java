@@ -3,6 +3,7 @@ package com.study.yongyeon.sunday.spring.springsunday.security.service;
 import com.study.yongyeon.sunday.spring.springsunday.dto.ClubAuthMemberDTO;
 import com.study.yongyeon.sunday.spring.springsunday.entity.ClubMemberSocial;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,7 +18,7 @@ import java.io.IOException;
 
 @Slf4j
 public class ClubLoginSuccessHandler implements AuthenticationSuccessHandler {
-    private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+//    private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
     private PasswordEncoder passwordEncoder;
 
     public ClubLoginSuccessHandler(PasswordEncoder passwordEncoder){
@@ -27,7 +28,8 @@ public class ClubLoginSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.info("AuthenticationSuccessHandler :: onAuthenticationSuccess :: start");
-
+//        redirectStrategy.sendRedirect(request,response,"/permit/all");
+        /*
         ClubAuthMemberDTO authMember = (ClubAuthMemberDTO) authentication.getPrincipal();
         boolean isFromLocal = ClubMemberSocial.LOCAL.equals(authMember.getFromSocial());
 
@@ -39,6 +41,7 @@ public class ClubLoginSuccessHandler implements AuthenticationSuccessHandler {
         if (isDefaultPassword && ! isFromLocal ){
             redirectStrategy.sendRedirect(request, response, "/member/modify?from="+authMember.getFromSocial());
         }
+         */
 
     }
 }

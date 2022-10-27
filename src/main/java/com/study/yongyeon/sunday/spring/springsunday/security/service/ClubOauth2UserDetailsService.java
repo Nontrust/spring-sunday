@@ -14,6 +14,8 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import javax.security.auth.login.LoginException;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -39,16 +41,30 @@ public class ClubOauth2UserDetailsService extends DefaultOAuth2UserService {
         oAuth2User.getAttributes().forEach((k,v)->log.info(k + ":" +v));    //user정보
 
         String email = new String();
+        String name = new String();
+        ClubMemberSocial fromMemberSocial = null;
+
         if("Google".equals(clientName)){
+            name = oAuth2User.getAttribute("email");
             email = oAuth2User.getAttribute("email");
+            fromMemberSocial = ClubMemberSocial.GOOGLE;
         }
+
+        else if("Naver".equals(clientName)){
+            Map NaverResponse = (Map<String, Object>) oAuth2User.getAttribute("response");
+            email = (String) NaverResponse.get("email");
+            name = (String) NaverResponse.get("name");
+
+            fromMemberSocial = ClubMemberSocial.NAVER;
+        }
+
         log.info("EMAIL : "+email);
 
-        ClubMember clubMember = saveSocialMember(email);
+        ClubMember clubMember = saveSocialMember(email, fromMemberSocial);
         ClubAuthMemberDTO clubAuthMember = new ClubAuthMemberDTO(
-                clubMember.getEmail()
+                clubMember.getName()
                 ,clubMember.getPassword()
-                ,ClubMemberSocial.GOOGLE
+                ,fromMemberSocial
                 ,clubMember.getRoleSet().stream()
                 .map((role)->
                     new SimpleGrantedAuthority(role.name())
@@ -59,8 +75,8 @@ public class ClubOauth2UserDetailsService extends DefaultOAuth2UserService {
         return clubAuthMember;
     }
 
-    private ClubMember saveSocialMember(String email) {
-        Optional<ClubMember> findBySocialMember = clubMemberRepository.findByEmail(email,ClubMemberSocial.GOOGLE);
+    private ClubMember saveSocialMember(String email, ClubMemberSocial clientName) {
+        Optional<ClubMember> findBySocialMember = clubMemberRepository.findByEmail(email,clientName);
         //DB에 저장 이력이 있다면 조회된 결과를 찾음
         if(findBySocialMember.isPresent()){
             return findBySocialMember.get();
@@ -71,7 +87,7 @@ public class ClubOauth2UserDetailsService extends DefaultOAuth2UserService {
                 .email(email)
                 .name(email)
                 .password(passwordEncoder.encode("1111"))
-                .fromSocial(ClubMemberSocial.GOOGLE)
+                .fromSocial(clientName)
                 .build();
         clubMember.addMemberRole(ClubMemberRole.USER);
         clubMemberRepository.save(clubMember);

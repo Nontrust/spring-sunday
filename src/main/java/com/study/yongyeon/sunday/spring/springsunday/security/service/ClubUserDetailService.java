@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ClubUserDetailService implements UserDetailsService {
     private final ClubMemberRepository clubMemberRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) {
@@ -30,7 +29,7 @@ public class ClubUserDetailService implements UserDetailsService {
 
         log.info("ClubUserDetailService::findMember ::: {}",findMember);
 
-        if(! findMember.isPresent()) {
+        if(findMember.isEmpty()) {
             throw new UsernameNotFoundException("Check Email or Social");
         } else {
             log.info("isNotPresent");
@@ -40,7 +39,7 @@ public class ClubUserDetailService implements UserDetailsService {
 
         log.info("---------------------\n{}",clubMember);
         ClubAuthMemberDTO clubAuthMember = new ClubAuthMemberDTO(
-                clubMember.getName(),
+                clubMember.getEmail(),
                 clubMember.getPassword(),
                 clubMember.getFromSocial(),
                 clubMember.getRoleSet().stream()
